@@ -55,6 +55,11 @@
 			}
 		}
 		
+		/** Получение ответственного за лид */
+		private function getAudutors($name, $lastName){
+			#$zapros =
+		}
+		
 		/** Создаем лид */
 		private function addLead($name, $lastName, $group) { // Входнгые параметры имя, фамилия и группа (группа не обязательная)
 			if(
@@ -106,6 +111,10 @@
             SELECT * FROM b_crm_lead WHERE ID=(SELECT MAX(ID) FROM b_crm_lead);
         ");
 			return $zapros->Fetch();
+		}
+		
+		public function main(&$arFields){
+			Dump::main($arFields);
 		}
 	}
 ?>

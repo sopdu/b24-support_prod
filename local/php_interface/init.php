@@ -6,6 +6,8 @@ require_once ($_SERVER["DOCUMENT_ROOT"].'/local/class/Core.php');
 	require_once ($_SERVER["DOCUMENT_ROOT"].'/local/class/all.php');
 
 	
+// (ils) b24-support_prod
+	require_once ($_SERVER["DOCUMENT_ROOT"].'/local/class/TicketTask.php');
 	
 // Разобрать потом
 /*

@@ -8,6 +8,14 @@ require_once ($_SERVER["DOCUMENT_ROOT"].'/local/class/Core.php');
 	
 // (ils) b24-support_prod
 	require_once ($_SERVER["DOCUMENT_ROOT"].'/local/class/TicketTask.php');
+	AddEventHandler("support", "OnAfterTicketAdd", array("newTicket", "main"));
+	AddEventHandler("support", "OnAfterTicketUpdate", array("upTicket", "main"));
+	AddEventHandler("tasks", "OnTaskUpdate", array("upTask", "main"));
+	AddEventHandler("forum", "onBeforeMessageAdd", array("commentTask", "main"));
+	AddEventHandler("main", "OnAfterUserAdd", array("regUser", "main"));
+	AddEventHandler("crm", "OnAfterCrmContactAdd", array("addContact", "main"));
+	
+	
 	
 // Разобрать потом
 /*

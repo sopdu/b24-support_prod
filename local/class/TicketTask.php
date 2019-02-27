@@ -28,17 +28,33 @@
 	Добавляем в группу
 	 */
 	class regUser {
+		
 		/** Проверяем есть-ли пользователь в контактах CRM */
 		private function getContact($name, $lastName){ // Входные параметры имя и фамилия
 			global $DB;
 			$zapros = $DB->Query("
-            select ID from b_crm_contact where NAME = '".$name."' and LAST_NAME = '".$lastName."'
-        ");
+            	select ID from b_crm_contact where NAME = '".$name."' and LAST_NAME = '".$lastName."'
+            ");
 			if($zapros->Fetch()){
 				return 'Y'; // такой человек есть в контактах CRM
 			} else {
 				return 'N'; // такого человека нет в контактах CRM
 			}
 		}
+		
+		/** Проверяем есть-ли пользователь в лидах CRM */
+		private function getLead($name, $lastName){ // Входные параметры имя и фамилия
+			global $DB;
+			$zapros = $DB->Query("
+            	select ID from b_crm_lead where NAME = '".$name."' and LAST_NAME = '".$lastName."'
+            ");
+			if($zapros->Fetch()){
+				return 'Y'; // такой человек есть в контактах CRM
+			} else {
+				return 'N'; // такого человека нет в контактах CRM
+			}
+		}
+		
+		
 	}
 ?>

@@ -11,5 +11,14 @@
 	CModule::IncludeModule("crm"); // модуль CRM
 	use Bitrix\Main\Mail\Event; // модуль почтовых событий
 	
-	
+	/** Техническая функция для отладки */
+	class Dump {
+		public function main($value){
+			$filePath = $_SERVER["DOCUMENT_ROOT"].'/MyDump.txt';
+			$file = fopen($filePath, "w");
+			fwrite($file, print_r($value, 1));
+			fclose();
+			return;
+		}
+	}
 ?>

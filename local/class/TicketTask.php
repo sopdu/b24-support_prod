@@ -56,8 +56,12 @@
 		}
 		
 		/** Получение ответственного за лид */
-		private function getAudutors($name, $lastName){
-			#$zapros =
+		private function getAudutors($extrgroup){
+			$zapros = CIBlockElement::GetPropertyValues(33, array());
+			while ($row = $zapros->Fetch()){
+				$result[$row["IBLOCK_ELEMENT_ID"]] = $row;
+			}
+			return $result[$extrgroup];
 		}
 		
 		/** Создаем лид */
@@ -114,7 +118,8 @@
 		}
 		
 		public function main(&$arFields){
-			Dump::main($arFields);
+			Dump::main(self::getAudutors($arFields["UF_EXTRGROUP"]));
+			#Dump::main($arFields);
 		}
 	}
 ?>

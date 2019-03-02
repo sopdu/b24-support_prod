@@ -22,6 +22,27 @@
 		}
 	}
 	
+	/** Функция собирает настройки из инфоблока "Технический" */
+	class setting {
+		public function main ($extranetGroup = '', $extranetSettingId = ''){
+			if(!empty($extranetGroup) || !empty($extranetSettingId)){
+				if(empty($extranetGroup) and !empty($extranetSettingId)){
+					$zapros = CIBlockElement::GetPropertyValues(33, array());
+					while ($row = $zapros->Fetch()){
+						$result[$row["IBLOCK_ELEMENT_ID"]] = $row;
+					}
+					return $result[$extranetSettingId];
+				}
+				if(!empty($extranetGroup) and empty($extranetSettingId)){
+					
+					return;
+				}
+			} else {
+				return;
+			}
+		}
+	}
+	
 	/**
 	Регистрируем пользователя
 	Создаем лид
@@ -53,15 +74,6 @@
 			} else {
 				return 'N'; // такого человека нет в контактах CRM
 			}
-		}
-		
-		/** Получение ответственного за лид */
-		private function getAudutors($extrgroup){
-			$zapros = CIBlockElement::GetPropertyValues(33, array());
-			while ($row = $zapros->Fetch()){
-				$result[$row["IBLOCK_ELEMENT_ID"]] = $row;
-			}
-			return $result[$extrgroup];
 		}
 		
 		/** Создаем лид */

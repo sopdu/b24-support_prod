@@ -150,6 +150,25 @@
 			return $zapros->Fetch();
 		}
 		
+		/** Уведомления о том, что зарегистрировался новый пользователь (лид) */
+		private function addNotify(){
+			CAdminNotify::Add( // уведомления в админ панель
+				array(
+					"MESSAGE"   =>  'Зарегистрировался новый пользователь технической поддержки: '.self::getMaxIdLead()["FULL_NAME"].'. <a target="_blank" href="/crm/lead/details/'.self::getMaxIdLead()["ID"].'">Перейти к списку</a>'
+				)
+			);
+			CIMNotify::Add( // уведомления в "колокольчик"
+				array(
+					"FROM_USER_ID" => 1,
+					"TO_USER_ID" => 7,
+					"NOTIFY_TYPE" => IM_NOTIFY_SYSTEM,
+					"NOTIFY_MODULE" => "im",
+					"NOTIFY_TAG"    => 'support',
+					"NOTIFY_MESSAGE" => 'Зарегистрировался новый пользователь технической поддержки: '.self::getMaxIdLead()["FULL_NAME"].'. <a target="_blank" href="/crm/lead/details/'.self::getMaxIdLead()["ID"].'/">Перейти</a>'
+				));
+			return;
+		}
+		
 		public function main(&$arFields){
 			Dump::main(setting::main('', $arFields["UF_EXTRGROUP"]));
 			#Dump::main(self::getAudutors($arFields["UF_EXTRGROUP"]));

@@ -77,7 +77,7 @@
 		}
 		
 		/** Создаем лид */
-		private function addLead($name, $lastName, $group) { // Входнгые параметры имя, фамилия и группа (группа не обязательная)
+		private function addLead($name, $lastName, $group, $extranetSettingId) { // Входнгые параметры имя, фамилия и группа (группа не обязательная)
 			if(
 				(self::getContact($name, $lastName) == 'N' || self::getLead($name, $lastName) == 'N') and
 				$group == 7
@@ -104,7 +104,7 @@
 	                  'NOW()',
 	                  '1',
 	                  '1',
-	                  '1',
+	                  '".setting::main('', $extranetSettingId)[154][0]."',
 	                  'Y',
 	                  'NEW',
 	                  'Форма регистрации ЛК ТП',
@@ -121,6 +121,27 @@
 			}
 		}
 		
+		/** Ставим задачу ответственном, что создан лид и надо его проверить */
+		private function addTask($name, $lastName, $group, $extranetSettingId){
+			if($group == 7){
+				$obTask = new CTasks;
+				$obTask->Add(
+					array(
+						"TITLE"                 =>  'В тех поддержке зарегистрировался новый пользователь',
+						"DESCRIPTION"           =>  'Зарегистрировался новый поьзователь в тех поддержке: <strong>'.$name.' '.$lastName.'</strong>. На основании его создал лид',
+						"AUDITORS"              =>  setting::main('', $extranetSettingId)[154],
+						"ACCOMPLICES"           =>  setting::main('', $extranetSettingId)[154],
+						"ALLOW_TIME_TRACKING"   =>  'Y',
+						"TAGS"                  =>  'Регистрация в тех поддержке',
+						"ALLOW_CHANGE_DEADLINE" =>  'Y',
+						"TASK_CONTROL"          =>  'Y',
+						"RESPONSIBLE_ID"        =>  setting::main('', $extranetSettingId)[154][0]
+					)
+				);
+			}
+			return;
+		}
+		
 		private function getMaxIdLead(){
 			global $DB;
 			$zapros = $DB->Query("
@@ -130,7 +151,8 @@
 		}
 		
 		public function main(&$arFields){
-			Dump::main(self::getAudutors($arFields["UF_EXTRGROUP"]));
+			Dump::main(setting::main('', $arFields["UF_EXTRGROUP"]));
+			#Dump::main(self::getAudutors($arFields["UF_EXTRGROUP"]));
 			#Dump::main($arFields);
 		}
 	}

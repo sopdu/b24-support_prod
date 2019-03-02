@@ -172,6 +172,49 @@
 			return;
 		}
 		
+		/** Сообщение в живую ленту о том, что зарегистрировался новый пользователь */
+		private function addSocNet($user, $extranetSettingId){
+			// создаем пост в блок который потом будет отправлен в живую ленту
+			$group = explode('.', setting::main('', $extranetSettingId)[153]);
+			$group = $group[0];
+			$postID = CBlogPost::Add(
+				array(
+					"TITLE" => 'Зарегистрировался новый пользователь технической поддержки',
+					"DETAIL_TEXT" => self::getMaxIdLead()["FULL_NAME"].' [URL=/crm/lead/details/'.self::getMaxIdLead()["ID"].'/]Перейти в лид[/URL]',
+					"BLOG_ID" => 1,
+					"AUTHOR_ID" => 1, //ID блога, в котором будет запись
+					"DATE_PUBLISH" => date('d.m.Y H:i'),
+					"PUBLISH_STATUS" => BLOG_PUBLISH_STATUS_PUBLISH,
+					"ENABLE_TRACKBACK" => 'N',
+					"ENABLE_COMMENTS" => 'Y'
+				)
+			);
+			$eventID = CSocNetLog::Add(
+				array(
+					'EVENT_ID'     => 'blog_post',
+					'=LOG_DATE'    => 'now()',
+					'TITLE_TEMPLATE' => '#USER_NAME# добавил(а) сообщение "#TITLE#" в блог',
+					'TITLE'    => "Зарегистрировался новый пользователь технической поддержки",
+					'MESSAGE'  => 'Зарегистрировался пользователь '.self::getMaxIdLead()["FULL_NAME"].' [URL=/crm/lead/details/'.self::getMaxIdLead()["ID"].'/]Перейти в лид[/URL]',
+					'TEXT_MESSAGE'  => 'Зарегистрировался пользователь '.self::getMaxIdLead()["FULL_NAME"].' [URL=/crm/lead/details/'.self::getMaxIdLead()["ID"].'/]Перейти в лид[/URL]',
+					'MODULE_ID'     => 'blog',
+					'CALLBACK_FUNC' => false,
+					'SOURCE_ID'     => $postID,
+					'ENABLE_COMMENTS'  => 'Y',
+					'RATING_TYPE_ID'   => 'BLOG_POST',
+					'ENTITY_TYPE' => 'U',
+					#'ENTITY_ID'   => '1',
+					'ENTITY_ID'   => $group,
+					'USER_ID'     => '1',
+					'URL' => '/company/personal/user/1/blog/'.$postID.'/',
+					"GROUP_ID"  => $group,
+					"CATEGORY_ID" => $group,
+				)
+			);
+			CSocNetLogRights::Add ( $eventID, array ("G3") );
+			return;
+		}
+		
 		public function main(&$arFields){
 			Dump::main(setting::main('', $arFields["UF_EXTRGROUP"]));
 			#Dump::main(self::getAudutors($arFields["UF_EXTRGROUP"]));

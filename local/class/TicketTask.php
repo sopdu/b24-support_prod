@@ -235,17 +235,23 @@
 		}
 		
 		public function main(&$arFields){
-			#self::addLead(
-			#	$arFields["NAME"],
-			#	$arFields["LAST_NAME"],
-			#	$arFields["GROUP_ID"][0],
-			#	$arFields["UF_EXTRGROUP"]
-			#);
-			#self::addNotify($arFields["UF_EXTRGROUP"]);
+			self::addLead(
+				$arFields["NAME"],
+				$arFields["LAST_NAME"],
+				$arFields["GROUP_ID"][0],
+				$arFields["UF_EXTRGROUP"]
+			);
+			self::addNotify($arFields["UF_EXTRGROUP"]);
+			self::addSocNet($arFields["UF_EXTRGROUP"]);
+			self::extranetGroup($arFields["ID"], $arFields["UF_EXTRGROUP"]);
 			
-			#Dump::main(setting::main('', $arFields["UF_EXTRGROUP"]));
-			#Dump::main(self::getAudutors($arFields["UF_EXTRGROUP"]));
-			#Dump::main($arFields);
+			/* Не создаем задачу о том, что создан новый лид
+	        self::addTask(
+		        $arFields["NAME"],
+		        $arFields["LAST_NAME"],
+		        $arFields["GROUP_ID"][0]
+	        );
+	        */
 		}
 	}
 ?>

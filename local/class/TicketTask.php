@@ -173,7 +173,7 @@
 		}
 		
 		/** Сообщение в живую ленту о том, что зарегистрировался новый пользователь */
-		private function addSocNet($user, $extranetSettingId){
+		private function addSocNet($extranetSettingId){
 			// создаем пост в блок который потом будет отправлен в живую ленту
 			$group = explode('.', setting::main('', $extranetSettingId)[153]);
 			$group = $group[0];
@@ -215,8 +215,35 @@
 			return;
 		}
 		
+		/** Добавляем пользователя в группу экстранета */
+		private function extranetGroup($userId, $extranetSettingId){
+			$group = explode('.', setting::main('', $extranetSettingId)[153]);
+			$group = $group[0];
+			CSocNetUserToGroup::Add(
+				array(
+					"USER_ID"               =>  $userId,
+					"GROUP_ID"              =>  $group,
+					"ROLE"                  =>  SONET_ROLES_USER,
+					"=DATE_CREATE"          =>  $GLOBALS["DB"]->CurrentTimeFunction(),
+					"=DATE_UPDATE"          =>  $GLOBALS["DB"]->CurrentTimeFunction(),
+					"INITIATED_BY_TYPE"     =>  SONET_INITIATED_BY_GROUP,
+					"INITIATED_BY_USER_ID"  =>  1,
+					"MESSAGE"               =>  'Новый пользователь'
+				)
+			);
+			return;
+		}
+		
 		public function main(&$arFields){
-			Dump::main(setting::main('', $arFields["UF_EXTRGROUP"]));
+			#self::addLead(
+			#	$arFields["NAME"],
+			#	$arFields["LAST_NAME"],
+			#	$arFields["GROUP_ID"][0],
+			#	$arFields["UF_EXTRGROUP"]
+			#);
+			#self::addNotify($arFields["UF_EXTRGROUP"]);
+			
+			#Dump::main(setting::main('', $arFields["UF_EXTRGROUP"]));
 			#Dump::main(self::getAudutors($arFields["UF_EXTRGROUP"]));
 			#Dump::main($arFields);
 		}

@@ -297,6 +297,55 @@
         ");
 			return $zapros->Fetch()["ID"];
 		}
+		
+		/** добавляем задачу */
+		// Требуеться тестирование
+		private function addTask($ticketID, $ticketMessage, $author){
+			if(self::getTask($ticketID) == 0){
+				$getTicket = self::getTicket($ticketID);
+				if($getTicket["CRITICALITY_ID"] == 4){
+					$critical = 0;
+					$criticalText = '<b>Критичность:</b> Низкая';
+				} elseif($getTicket["CRITICALITY_ID"] == 5){
+					$critical = 1;
+					$criticalText = '<b>Критичность:</b> Средняя';
+				} elseif($getTicket["CRITICALITY_ID"] == 6){
+					$critical = 3;
+					$criticalText = '<b>Критичность:</b> Высокая';
+				} else {
+					$critical = '';
+				}
+				$addToMessage = '
+                	<br /><br />'.$criticalText.'
+                	<br /><br /><br />
+                	_______________________________________________________
+                	<br /><br />
+                	Что бы ответить пользователю начните комментарий с символов:<br />
+                	~|toUser|~
+                	<br />
+                	<strong>Например: </strong>~|toUser|~ Услуги по технической поддержки оказаны.<br />
+                
+            	';
+				$obTask = new CTasks;
+				$obTask->Add(
+					array(
+						"TITLE"                 =>  'Ticket_'.$ticketID.': '.$getTicket["TITLE"],
+						"DESCRIPTION"           =>  $ticketMessage.$addToMessage,
+						"PRIORITY"              =>  $critical,
+						#"ACCOMPLICES"           =>  array(8),
+						"AUDITORS"              =>  array(8),
+						"ALLOW_TIME_TRACKING"   =>  'Y',
+						"TAGS"                  =>  'Тикет тех поддержки',
+						"ALLOW_CHANGE_DEADLINE" =>  'Y',
+						"TASK_CONTROL"          =>  'Y',
+						"RESPONSIBLE_ID"        =>  $getTicket["RESPONSIBLE_USER_ID"],
+						"GROUP_ID"              =>  self::getGroup($author)
+					)
+				);
+			}
+			return;
+		}
+		
 	}
 	
 ?>

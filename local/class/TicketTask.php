@@ -286,6 +286,17 @@
 			$zapros = CTicket::GetByID($ticketID, "ru", "N")->Fetch();
 			return $zapros;
 		}
+		
+		/** Получаем id группы */
+		// Требуеться протестировать
+		private function getGroup($author){
+			global $DB;
+			$groupGroupName = CIBlockElement::GetByID(CUser::GetByID($author)->Fetch()["UF_EXTRGROUP"])->Fetch()["NAME"];
+			$zapros = $DB->Query("
+            select ID from b_sonet_group where NAME = '".$groupGroupName."'
+        ");
+			return $zapros->Fetch()["ID"];
+		}
 	}
 	
 ?>

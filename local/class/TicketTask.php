@@ -281,7 +281,11 @@
 			return $result;
 		}
 		
-		
+		/** получение тикета */
+		private function getTicket($ticketID){
+			$zapros = CTicket::GetByID($ticketID, "ru", "N")->Fetch();
+			return $zapros;
+		}
 	}
 	
 ?>

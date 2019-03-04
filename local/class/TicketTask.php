@@ -257,7 +257,31 @@
 	
 	/** Опперации при создании тикета */
 	class newTicket {
-	
+		
+		/** Проверяем наличие задачи */
+		private function getTask($ticketID){
+			$zapros = CTasks::GetList(
+				array(),
+				array(),
+				array(),
+				array()
+			);
+			while ($row = $zapros->Fetch()){
+				$exp = explode(': ', $row["NAME"]);
+				$exp = explode('_', $exp[0]);
+				if($exp[1] == $ticketID){
+					$resultZapros[] = $row;
+				}
+			}
+			if(empty($resultZapros)) {
+				$result = 0;
+			} else {
+				$result = 1;
+			}
+			return $result;
+		}
+		
+		
 	}
 	
 ?>

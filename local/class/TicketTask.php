@@ -252,6 +252,7 @@
 		        $arFields["GROUP_ID"][0]
 	        );
 	        */
+			return;
 		}
 	}
 	
@@ -288,7 +289,6 @@
 		}
 		
 		/** Получаем id группы */
-		// Требуеться протестировать
 		private function getGroup($author){
 			global $DB;
 			$groupGroupName = CIBlockElement::GetByID(CUser::GetByID($author)->Fetch()["UF_EXTRGROUP"])->Fetch()["NAME"];
@@ -345,7 +345,66 @@
 			}
 			return;
 		}
+	
+		public function main(&$arFields) {
+			// getGroup
+			// MESSAGE_AUTHOR_USER_ID
+			Dump::main(self::getGroup($arFields["MESSAGE_AUTHOR_USER_ID"]));
+			
+			
+			return;
+		}
 		
+		
+		/*
+		 * Array
+(
+    [SITE_ID] => co
+    [CLOSE] =>
+    [TITLE] => dsad
+    [CRITICALITY_ID] =>
+    [CATEGORY_ID] =>
+    [MARK_ID] =>
+    [MESSAGE] => dsad
+    [HIDDEN] => N
+    [FILES] => Array
+        (
+        )
+
+    [COUPON] =>
+    [PUBLIC_EDIT_URL] => /extranet/
+    [AUTO_CLOSE_DAYS] => 7
+    [MESSAGE_AUTHOR_SID] =>
+    [MESSAGE_AUTHOR_USER_ID] => 102
+    [MESSAGE_CREATED_MODULE_NAME] => support
+    [MESSAGE_SOURCE_ID] => 0
+    [LOG] => N
+    [IS_LOG] => N
+    [ID] => 8
+    [MID] => 15
+)
+		 *
+		 *
+		public function main($arFields) {
+			if(CModule::IncludeModule("support")){
+				if($arFields != null){
+					if(empty($arFields)){
+						Dump::main('is not array');
+					} else {
+						Dump::main($arFields);
+						#Dump::main('function is working');
+					}
+				} else {
+					Dump::main('this null');
+				}
+			} else {
+				Dump::main('no module');
+			}
+			
+			return;
+		}
+		*/
 	}
+	
 	
 ?>

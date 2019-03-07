@@ -16,7 +16,6 @@ require_once ($_SERVER["DOCUMENT_ROOT"].'/local/class/Core.php');
 	AddEventHandler("crm", "OnAfterCrmContactAdd", array("addContact", "main"));
 	
 	
-	
 // Разобрать потом
 /*
 AddEventHandler("crm", "OnAfterCrmLeadAdd", array("crmLead", "postAfterAddLead"));

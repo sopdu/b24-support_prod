@@ -404,5 +404,21 @@
 		private function getTask($task_id){
 			return CTasks::GetByID($task_id)->Fetch();
 		}
+		
+		private function addComment($forumID, $topicID, $message){
+			global $USER;
+			$addArray = array(
+				"POST_MESSAGE"  =>  '[COLOR=#ca2c92]Пользователь поддержки:[/COLOR]<br />'.$message,
+				"FORUM_ID"      =>  $forumID,
+				"TOPIC_ID"      =>  $topicID,
+				"NEW_TOPIC"     =>  'N',
+				"AUTHOR_ID"     =>  $USER->GetID(),
+				"POST_DATE"     =>  date('Y-m-d H:i:s'),
+				"APPROVED"      =>  'Y',
+				"AUTHOR_NAME"   =>  $USER->GetFullName()
+			);
+			CForumMessage::Add($addArray);
+			return;
+		}
 	}
 ?>

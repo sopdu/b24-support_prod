@@ -401,6 +401,8 @@
 			return $result;
 		}
 		
-		
+		private function getTask($task_id){
+			return CTasks::GetByID($task_id)->Fetch();
+		}
 	}
 ?>

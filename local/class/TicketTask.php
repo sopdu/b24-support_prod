@@ -516,6 +516,13 @@
 			}
 			return;
 		}
+		
+		public function main(&$arFields){
+			if(!empty($arFields)){
+				self::addMessInTicket($arFields);
+			}
+			return;
+		}
 	}
 	
 ?>

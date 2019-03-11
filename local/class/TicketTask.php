@@ -383,7 +383,24 @@
 	
 	/** Операции при изменении тикета */
 	class upTicket {
-	
-	
+		
+		private function getTaskID($data){
+			$zapros = CTasks::GetList(
+				array(),
+				array(),
+				array("ID", "TITLE"),
+				array()
+			);
+			while($row = $zapros->Fetch()){
+				$expA = explode(":", $row["TITLE"]);
+				$expB = explode("_", $expA[0]);
+				if($expB[1] == $data["ID"]){
+					$result = $row["ID"];
+				}
+			}
+			return $result;
+		}
+		
+		
 	}
 ?>

@@ -477,4 +477,9 @@
 			return;
 		}
 	}
+	
+	class commentTask {
+	
+	}
+	
 ?>

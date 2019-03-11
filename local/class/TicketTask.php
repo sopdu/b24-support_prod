@@ -274,8 +274,7 @@
 	class newTicket	{
 		
 		/** Проверяем наличие задачи */
-		private function getTask($ticketID)
-		{
+		private function getTask($ticketID) {
 			$zapros = CTasks::GetList(
 				array(),
 				array(),
@@ -380,5 +379,11 @@
 			}
 			return;
 		}
+	}
+	
+	/** Операции при изменении тикета */
+	class upTicket {
+	
+	
 	}
 ?>

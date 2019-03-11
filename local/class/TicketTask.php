@@ -500,6 +500,22 @@
 			}
 			return $result;
 		}
+		
+		private function addMessInTicket($comment){
+			if(!empty(self::getComment($comment))) {
+				$mess = '';
+				CTicket::Set(
+					array(
+						"MESSAGE"                   => self::getComment($comment)["message"],
+						"MESSAGE_AUTHOR_USER_ID"    => self::getComment($comment)["author_id"]
+					),
+					$mess,
+					self::getComment($comment)["ticker_id"],
+					"N"
+				);
+			}
+			return;
+		}
 	}
 	
 ?>

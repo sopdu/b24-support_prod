@@ -604,5 +604,11 @@
 			));
 			return;
 		}
+		
+		public function main(&$arFields){
+			self::activateUser($arFields);
+			self::sendMail($arFields);
+			return;
+		}
 	}
 ?>

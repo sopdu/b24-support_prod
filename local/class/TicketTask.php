@@ -565,7 +565,21 @@
 	}
 	
 	class addContact {
-	
-	
+		
+		private function getUser($user){
+			$zapros = CUser::GetList(
+				($by="personal_country"),
+				($order="desc"),
+				array(
+					"NAME" => $user["FULL_NAME"]
+				)
+			)
+				->Fetch();
+			$result = array(
+				"ID"    =>  $zapros["ID"],
+				"EMAIL" =>  $zapros["EMAIL"]
+			);
+			return $result;
+		}
 	}
 ?>

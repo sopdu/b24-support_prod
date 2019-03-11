@@ -592,5 +592,17 @@
 			);
 			return;
 		}
+		
+		private function sendMail($data){
+			Event::send(array(
+				"EVENT_NAME" => "ilsSupport",
+				"LID" => "s1",
+				"C_FIELDS" => array(
+					"EMAIL" => self::getUser($data)["EMAIL"],
+					"USER_ID" => self::getUser($data)["ID"]
+				),
+			));
+			return;
+		}
 	}
 ?>

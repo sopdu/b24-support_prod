@@ -34,8 +34,22 @@
 					return $result[$extranetSettingId];
 				}
 				if(!empty($extranetGroup) and empty($extranetSettingId)){
-					
-					return;
+					$zapros = CIBlockElement::GetList(
+						array(),
+						array(
+							"IBLOCK_ID"     => 33,
+							"PROPERTY_153"  => $extranetGroup
+						),
+						false,
+						false,
+						array("ID")
+					);
+					$rowId = $zapros->Fetch();
+					$zapros = CIBlockElement::GetPropertyValues(33, array());
+					while ($row = $zapros->Fetch()){
+						$result[$row["IBLOCK_ELEMENT_ID"]] = $row;
+					}
+					return $result[$rowId["ID"]];
 				}
 			} else {
 				return;
@@ -257,24 +271,25 @@
 	}
 	
 	/** Опперации при создании тикета */
-	class newTicket {
+	class newTicket	{
 		
 		/** Проверяем наличие задачи */
-		private function getTask($ticketID){
+		private function getTask($ticketID)
+		{
 			$zapros = CTasks::GetList(
 				array(),
 				array(),
 				array(),
 				array()
 			);
-			while ($row = $zapros->Fetch()){
+			while ($row = $zapros->Fetch()) {
 				$exp = explode(': ', $row["NAME"]);
 				$exp = explode('_', $exp[0]);
-				if($exp[1] == $ticketID){
+				if ($exp[1] == $ticketID) {
 					$resultZapros[] = $row;
 				}
 			}
-			if(empty($resultZapros)) {
+			if (empty($resultZapros)) {
 				$result = 0;
 			} else {
 				$result = 1;
@@ -283,40 +298,45 @@
 		}
 		
 		/** получение тикета */
-		private function getTicket($ticketID){
+		private function getTicket($ticketID)
+		{
 			$zapros = CTicket::GetByID($ticketID, "ru", "N")->Fetch();
 			return $zapros;
 		}
 		
 		/** Получаем id группы */
-		private function getGroup($author){
+		private function getGroup($author)
+		{
 			global $DB;
 			$groupGroupName = CIBlockElement::GetByID(CUser::GetByID($author)->Fetch()["UF_EXTRGROUP"])->Fetch()["NAME"];
-			$zapros = $DB->Query("
-            select ID from b_sonet_group where NAME = '".$groupGroupName."'
-        ");
+			$zapros = $DB->Query(
+				"
+            select ID from b_sonet_group where NAME = '" . $groupGroupName . "'
+        "
+			);
 			return $zapros->Fetch()["ID"];
 		}
 		
 		/** добавляем задачу */
 		// Требуеться тестирование
-		private function addTask($ticketID, $ticketMessage, $author){
-			if(self::getTask($ticketID) == 0){
+		private function addTask($ticketID, $ticketMessage, $author)
+		{
+			if (self::getTask($ticketID) == 0) {
 				$getTicket = self::getTicket($ticketID);
-				if($getTicket["CRITICALITY_ID"] == 4){
+				if ($getTicket["CRITICALITY_ID"] == 4) {
 					$critical = 0;
 					$criticalText = '<b>Критичность:</b> Низкая';
-				} elseif($getTicket["CRITICALITY_ID"] == 5){
+				} elseif ($getTicket["CRITICALITY_ID"] == 5) {
 					$critical = 1;
 					$criticalText = '<b>Критичность:</b> Средняя';
-				} elseif($getTicket["CRITICALITY_ID"] == 6){
+				} elseif ($getTicket["CRITICALITY_ID"] == 6) {
 					$critical = 3;
 					$criticalText = '<b>Критичность:</b> Высокая';
 				} else {
 					$critical = '';
 				}
 				$addToMessage = '
-                	<br /><br />'.$criticalText.'
+                	<br /><br />' . $criticalText . '
                 	<br /><br /><br />
                 	_______________________________________________________
                 	<br /><br />
@@ -329,82 +349,36 @@
 				$obTask = new CTasks;
 				$obTask->Add(
 					array(
-						"TITLE"                 =>  'Ticket_'.$ticketID.': '.$getTicket["TITLE"],
-						"DESCRIPTION"           =>  $ticketMessage.$addToMessage,
-						"PRIORITY"              =>  $critical,
+						"TITLE" => 'Ticket_' . $ticketID . ': ' . $getTicket["TITLE"],
+						"DESCRIPTION" => $ticketMessage . $addToMessage,
+						"PRIORITY" => $critical,
 						#"ACCOMPLICES"           =>  array(8),
-						"AUDITORS"              =>  array(8),
-						"ALLOW_TIME_TRACKING"   =>  'Y',
-						"TAGS"                  =>  'Тикет тех поддержки',
-						"ALLOW_CHANGE_DEADLINE" =>  'Y',
-						"TASK_CONTROL"          =>  'Y',
-						"RESPONSIBLE_ID"        =>  $getTicket["RESPONSIBLE_USER_ID"],
-						"GROUP_ID"              =>  self::getGroup($author)
+						"ACCOMPLICES" => setting::main(self::getGroup($author), '')[155],
+						#"AUDITORS"              =>  array(8),
+						"AUDITORS" => setting::main(self::getGroup($author), '')[155],
+						"ALLOW_TIME_TRACKING" => 'Y',
+						"TAGS" => 'Тикет тех поддержки',
+						"ALLOW_CHANGE_DEADLINE" => 'Y',
+						"TASK_CONTROL" => 'Y',
+						#"RESPONSIBLE_ID"        =>  $getTicket["RESPONSIBLE_USER_ID"],
+						"RESPONSIBLE_ID" => setting::main(self::getGroup($author), '')[155][0],
+						"GROUP_ID" => self::getGroup($author)
 					)
 				);
 			}
 			return;
 		}
-	
-		public function main(&$arFields) {
-			// getGroup
-			// MESSAGE_AUTHOR_USER_ID
-			Dump::main(self::getGroup($arFields["MESSAGE_AUTHOR_USER_ID"]));
-			
-			
-			return;
-		}
 		
-		
-		/*
-		 * Array
-(
-    [SITE_ID] => co
-    [CLOSE] =>
-    [TITLE] => dsad
-    [CRITICALITY_ID] =>
-    [CATEGORY_ID] =>
-    [MARK_ID] =>
-    [MESSAGE] => dsad
-    [HIDDEN] => N
-    [FILES] => Array
-        (
-        )
-
-    [COUPON] =>
-    [PUBLIC_EDIT_URL] => /extranet/
-    [AUTO_CLOSE_DAYS] => 7
-    [MESSAGE_AUTHOR_SID] =>
-    [MESSAGE_AUTHOR_USER_ID] => 102
-    [MESSAGE_CREATED_MODULE_NAME] => support
-    [MESSAGE_SOURCE_ID] => 0
-    [LOG] => N
-    [IS_LOG] => N
-    [ID] => 8
-    [MID] => 15
-)
-		 *
-		 *
-		public function main($arFields) {
-			if(CModule::IncludeModule("support")){
-				if($arFields != null){
-					if(empty($arFields)){
-						Dump::main('is not array');
-					} else {
-						Dump::main($arFields);
-						#Dump::main('function is working');
-					}
-				} else {
-					Dump::main('this null');
-				}
-			} else {
-				Dump::main('no module');
+		public function main(&$arFields)
+		{
+			if (self::getTask($arFields["ID"]) == 0) {
+				self::addTask(
+					$arFields["ID"],
+					$arFields["MESSAGE"],
+					$arFields["MESSAGE_AUTHOR_USER_ID"]
+				);
 			}
-			
 			return;
 		}
-		*/
 	}
-	
-	
 ?>

@@ -548,5 +548,15 @@
 			$expВ = explode('_', $expA[0]);
 			return $expВ[1];
 		}
+		
+		private function upTicket($taskID){
+			CTicket::Set(
+				array(
+					"CLOSE" => self::getTaskStatus($taskID)
+				),
+				self::getTicketID($taskID)
+			);
+			return;
+		}
 	}
 ?>

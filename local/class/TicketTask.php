@@ -527,9 +527,20 @@
 	
 	/** Операции при изменении задачи */
 	class upTask {
+		
 		private function getTask($taskID){
 			$zapros = CTasks::GetByID($taskID)->Fetch();
 			return $zapros;
+		}
+		
+		private function getTaskStatus($taskID){
+			if($taskID["STATUS"] == 2){
+				$closeTask = 'N';
+			}
+			if($taskID["STATUS"] == 5){
+				$closeTask = 'Y';
+			}
+			return $closeTask;
 		}
 	}
 ?>

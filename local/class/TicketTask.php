@@ -459,5 +459,22 @@
 			CForumMessage::Add($addArray);
 			return;
 		}
+		
+		public function main(&$arFields){
+			if(!empty($arFields["MESSAGE"])) {
+				self::addComment(
+					self::getTask(self::getTaskID($arFields))["FORUM_ID"],
+					self::getTask(self::getTaskID($arFields))["FORUM_TOPIC_ID"],
+					$arFields["MESSAGE"]
+				);
+			}
+			if($arFields["CLOSE"] == 'Y' and self::getTask(self::getTaskID($arFields))["STATUS"] != 5){
+				self::openCloceTask(self::getTaskID($arFields), 5);
+			}
+			if($arFields["CLOSE"] == 'N' and self::getTask(self::getTaskID($arFields))["STATUS"] != 2){
+				self::openCloceTask(self::getTaskID($arFields), 2);
+			}
+			return;
+		}
 	}
 ?>

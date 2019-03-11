@@ -563,4 +563,9 @@
 			self::upTicket($arFields);
 		}
 	}
+	
+	class addContact {
+	
+	
+	}
 ?>

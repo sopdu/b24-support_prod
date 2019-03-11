@@ -581,5 +581,16 @@
 			);
 			return $result;
 		}
+		
+		private function activateUser($data){
+			$user = new CUser;
+			$user->Update(
+				self::getUser($data)["ID"],
+				array(
+					"ACTIVE" => 'Y'
+				)
+			);
+			return;
+		}
 	}
 ?>

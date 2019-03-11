@@ -425,5 +425,39 @@
 			$zapros = CTicket::GetByID($ticketID)->Fetch();
 			return $zapros;
 		}
+		
+		private function openCloceTask($taskID, $status){
+			global $USER;
+			if($status == 2){
+				$dateRes = '';
+				$mess = 'открыл';
+				$color = 'ee1d24';
+			}
+			if($status == 5){
+				$dateRes = date('d.m.Y H:i.s');
+				$mess = 'закрыл';
+				$color = '00a650';
+			}
+			$upTask= new CTasks;
+			$upTask->Update(
+				$taskID,
+				array(
+					"STATUS"        =>  $status,
+					"CLOSED_DATE"   =>  $dateRes,
+				)
+			);
+			$addArray = array(
+				"POST_MESSAGE"  =>  '[COLOR=#ca2c92]Пользователь поддержки[/COLOR] [B][COLOR=#'.$color.']'.$mess.'[/COLOR][/B] обращение в [B]'.date('d.m.Y H:i:s').'[/B]',
+				"FORUM_ID"      =>  self::getTask($taskID)["FORUM_ID"],
+				"TOPIC_ID"      =>  self::getTask($taskID)["FORUM_TOPIC_ID"],
+				"NEW_TOPIC"     =>  'N',
+				"AUTHOR_ID"     =>  $USER->GetID(),
+				"POST_DATE"     =>  date('Y-m-d H:i:s'),
+				"APPROVED"      =>  'Y',
+				"AUTHOR_NAME"   =>  $USER->GetFullName()
+			);
+			CForumMessage::Add($addArray);
+			return;
+		}
 	}
 ?>

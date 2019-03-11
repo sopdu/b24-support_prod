@@ -487,6 +487,19 @@
 			$expTitleB = explode('_', $expTitleA[0]);
 			return $expTitleB[1];
 		}
+		
+		private function getComment($comment){
+			$exp = explode('|~', $comment["POST_MESSAGE"]);
+			if($exp[0] == '~|toUser'){
+				$result = array(
+					"message"   => $exp[1],
+					"author"    => $comment["AUTHOR_NAME"],
+					"author_id" => $comment["USER_ID"],
+					"ticker_id" => self::getTicketID($comment)
+				);
+			}
+			return $result;
+		}
 	}
 	
 ?>

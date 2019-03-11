@@ -542,5 +542,11 @@
 			}
 			return $closeTask;
 		}
+		
+		private function getTicketID($taskID){
+			$expA = explode(':', $taskID["TITLE"]);
+			$expВ = explode('_', $expA[0]);
+			return $expВ[1];
+		}
 	}
 ?>

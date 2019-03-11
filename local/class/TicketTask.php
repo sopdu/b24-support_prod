@@ -558,5 +558,9 @@
 			);
 			return;
 		}
+		
+		public function main(&$arFields){
+			self::upTicket($arFields);
+		}
 	}
 ?>

@@ -479,7 +479,14 @@
 	}
 	
 	class commentTask {
-	
+		
+		private function getTicketID($comment){
+			$exp = explode("_", $comment["XML_ID"]);
+			$zapros = CTasks::GetByID($exp[1])->Fetch();
+			$expTitleA = explode(':', $zapros["TITLE"]);
+			$expTitleB = explode('_', $expTitleA[0]);
+			return $expTitleB[1];
+		}
 	}
 	
 ?>

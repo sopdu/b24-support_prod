@@ -420,5 +420,10 @@
 			CForumMessage::Add($addArray);
 			return;
 		}
+		
+		private function getTicket($ticketID){
+			$zapros = CTicket::GetByID($ticketID)->Fetch();
+			return $zapros;
+		}
 	}
 ?>

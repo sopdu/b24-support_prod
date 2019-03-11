@@ -527,6 +527,9 @@
 	
 	/** Операции при изменении задачи */
 	class upTask {
-	
+		private function getTask($taskID){
+			$zapros = CTasks::GetByID($taskID)->Fetch();
+			return $zapros;
+		}
 	}
 ?>

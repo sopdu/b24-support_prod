@@ -274,8 +274,7 @@
 	class newTicket	{
 		
 		/** Проверяем наличие задачи */
-		private function getTask($ticketID)
-		{
+		private function getTask($ticketID) {
 			$zapros = CTasks::GetList(
 				array(),
 				array(),
@@ -377,6 +376,103 @@
 					$arFields["MESSAGE"],
 					$arFields["MESSAGE_AUTHOR_USER_ID"]
 				);
+			}
+			return;
+		}
+	}
+	
+	/** Операции при изменении тикета */
+	class upTicket {
+		
+		private function getTaskID($data){
+			$zapros = CTasks::GetList(
+				array(),
+				array(),
+				array("ID", "TITLE"),
+				array()
+			);
+			while($row = $zapros->Fetch()){
+				$expA = explode(":", $row["TITLE"]);
+				$expB = explode("_", $expA[0]);
+				if($expB[1] == $data["ID"]){
+					$result = $row["ID"];
+				}
+			}
+			return $result;
+		}
+		
+		private function getTask($task_id){
+			return CTasks::GetByID($task_id)->Fetch();
+		}
+		
+		private function addComment($forumID, $topicID, $message){
+			global $USER;
+			$addArray = array(
+				"POST_MESSAGE"  =>  '[COLOR=#ca2c92]Пользователь поддержки:[/COLOR]<br />'.$message,
+				"FORUM_ID"      =>  $forumID,
+				"TOPIC_ID"      =>  $topicID,
+				"NEW_TOPIC"     =>  'N',
+				"AUTHOR_ID"     =>  $USER->GetID(),
+				"POST_DATE"     =>  date('Y-m-d H:i:s'),
+				"APPROVED"      =>  'Y',
+				"AUTHOR_NAME"   =>  $USER->GetFullName()
+			);
+			CForumMessage::Add($addArray);
+			return;
+		}
+		
+		private function getTicket($ticketID){
+			$zapros = CTicket::GetByID($ticketID)->Fetch();
+			return $zapros;
+		}
+		
+		private function openCloceTask($taskID, $status){
+			global $USER;
+			if($status == 2){
+				$dateRes = '';
+				$mess = 'открыл';
+				$color = 'ee1d24';
+			}
+			if($status == 5){
+				$dateRes = date('d.m.Y H:i.s');
+				$mess = 'закрыл';
+				$color = '00a650';
+			}
+			$upTask= new CTasks;
+			$upTask->Update(
+				$taskID,
+				array(
+					"STATUS"        =>  $status,
+					"CLOSED_DATE"   =>  $dateRes,
+				)
+			);
+			$addArray = array(
+				"POST_MESSAGE"  =>  '[COLOR=#ca2c92]Пользователь поддержки[/COLOR] [B][COLOR=#'.$color.']'.$mess.'[/COLOR][/B] обращение в [B]'.date('d.m.Y H:i:s').'[/B]',
+				"FORUM_ID"      =>  self::getTask($taskID)["FORUM_ID"],
+				"TOPIC_ID"      =>  self::getTask($taskID)["FORUM_TOPIC_ID"],
+				"NEW_TOPIC"     =>  'N',
+				"AUTHOR_ID"     =>  $USER->GetID(),
+				"POST_DATE"     =>  date('Y-m-d H:i:s'),
+				"APPROVED"      =>  'Y',
+				"AUTHOR_NAME"   =>  $USER->GetFullName()
+			);
+			CForumMessage::Add($addArray);
+			return;
+		}
+		
+		public function main(&$arFields){
+			if(!empty($arFields["MESSAGE"])) {
+				self::addComment(
+					self::getTask(self::getTaskID($arFields))["FORUM_ID"],
+					self::getTask(self::getTaskID($arFields))["FORUM_TOPIC_ID"],
+					$arFields["MESSAGE"]
+				);
+			}
+			if($arFields["CLOSE"] == 'Y' and self::getTask(self::getTaskID($arFields))["STATUS"] != 5){
+				self::openCloceTask(self::getTaskID($arFields), 5);
+			}
+			if($arFields["CLOSE"] == 'N' and self::getTask(self::getTaskID($arFields))["STATUS"] != 2){
+				self::openCloceTask(self::getTaskID($arFields), 2);
 			}
 			return;
 		}

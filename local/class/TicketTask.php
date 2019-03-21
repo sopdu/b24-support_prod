@@ -525,4 +525,42 @@
 		}
 	}
 	
+	/** Операции при изменении задачи */
+	class upTask {
+		
+		private function getTask($taskID){
+			$zapros = CTasks::GetByID($taskID)->Fetch();
+			return $zapros;
+		}
+		
+		private function getTaskStatus($taskID){
+			if($taskID["STATUS"] == 2){
+				$closeTask = 'N';
+			}
+			if($taskID["STATUS"] == 5){
+				$closeTask = 'Y';
+			}
+			return $closeTask;
+		}
+		
+		private function getTicketID($taskID){
+			$expA = explode(':', $taskID["TITLE"]);
+			$expВ = explode('_', $expA[0]);
+			return $expВ[1];
+		}
+		
+		private function upTicket($taskID){
+			CTicket::Set(
+				array(
+					"CLOSE" => self::getTaskStatus($taskID)
+				),
+				self::getTicketID($taskID)
+			);
+			return;
+		}
+		
+		public function main(&$arFields){
+			self::upTicket($arFields);
+		}
+	}
 ?>

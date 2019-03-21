@@ -563,4 +563,52 @@
 			self::upTicket($arFields);
 		}
 	}
+	
+	class addContact {
+		
+		private function getUser($user){
+			$zapros = CUser::GetList(
+				($by="personal_country"),
+				($order="desc"),
+				array(
+					"NAME" => $user["FULL_NAME"]
+				)
+			)
+				->Fetch();
+			$result = array(
+				"ID"    =>  $zapros["ID"],
+				"EMAIL" =>  $zapros["EMAIL"]
+			);
+			return $result;
+		}
+		
+		private function activateUser($data){
+			$user = new CUser;
+			$user->Update(
+				self::getUser($data)["ID"],
+				array(
+					"ACTIVE" => 'Y'
+				)
+			);
+			return;
+		}
+		
+		private function sendMail($data){
+			Event::send(array(
+				"EVENT_NAME" => "ilsSupport",
+				"LID" => "s1",
+				"C_FIELDS" => array(
+					"EMAIL" => self::getUser($data)["EMAIL"],
+					"USER_ID" => self::getUser($data)["ID"]
+				),
+			));
+			return;
+		}
+		
+		public function main(&$arFields){
+			self::activateUser($arFields);
+			self::sendMail($arFields);
+			return;
+		}
+	}
 ?>

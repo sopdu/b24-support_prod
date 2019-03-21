@@ -477,4 +477,52 @@
 			return;
 		}
 	}
+	
+	class commentTask {
+		
+		private function getTicketID($comment){
+			$exp = explode("_", $comment["XML_ID"]);
+			$zapros = CTasks::GetByID($exp[1])->Fetch();
+			$expTitleA = explode(':', $zapros["TITLE"]);
+			$expTitleB = explode('_', $expTitleA[0]);
+			return $expTitleB[1];
+		}
+		
+		private function getComment($comment){
+			$exp = explode('|~', $comment["POST_MESSAGE"]);
+			if($exp[0] == '~|toUser'){
+				$result = array(
+					"message"   => $exp[1],
+					"author"    => $comment["AUTHOR_NAME"],
+					"author_id" => $comment["USER_ID"],
+					"ticker_id" => self::getTicketID($comment)
+				);
+			}
+			return $result;
+		}
+		
+		private function addMessInTicket($comment){
+			if(!empty(self::getComment($comment))) {
+				$mess = '';
+				CTicket::Set(
+					array(
+						"MESSAGE"                   => self::getComment($comment)["message"],
+						"MESSAGE_AUTHOR_USER_ID"    => self::getComment($comment)["author_id"]
+					),
+					$mess,
+					self::getComment($comment)["ticker_id"],
+					"N"
+				);
+			}
+			return;
+		}
+		
+		public function main(&$arFields){
+			if(!empty($arFields)){
+				self::addMessInTicket($arFields);
+			}
+			return;
+		}
+	}
+	
 ?>
